@@ -1,8 +1,13 @@
 #include "CTcpSocket.h"
 #include"CSystemSocket.h"
 #include<thread>
+#include<string.h>
 
+#ifdef C_WIN
 #define log(errMsg) printf("[%s] failed,error code %d\n",errMsg,WSAGetLastError())
+#else
+#define log(errMsg) printf("[%s] failed,error code %d\n",errMsg,errno)
+#endif
 
 /*@Tcp*/
 CTcpSocket::CTcpSocket():fd(~0)
@@ -49,7 +54,7 @@ void CTcpSocket::connectToHost(const CHostAddress& address, cuint16 port, CTcp::
 	sockaddr_in serAddr;
 	serAddr.sin_family = protocol;
 	serAddr.sin_port = htons(port);
-	serAddr.sin_addr.S_un.S_addr = address.toIpv4Address();
+	serAddr.sin_addr.s_addr = address.toIpv4Address();
 
 	if (CSystemSocket::connect(fd, (sockaddr*)&serAddr, sizeof(sockaddr_in)) == SOCKET_ERROR)
 	{
@@ -144,8 +149,11 @@ std::string CTcpSocket::peerName() const
 {
 	sockaddr_in addr;
 	int len = sizeof(sockaddr_in);
-	getpeername(fd,(sockaddr*) &addr, &len);
-
+#ifdef C_WIN
+	getpeername(fd, (sockaddr*)&addr, &len);
+#else
+	getpeername(fd, (sockaddr*)&addr, (socklen_t*)&len);
+#endif // C_WIN
 	char str[INET_ADDRSTRLEN] = "";
 	inet_ntop(AF_INET, &addr.sin_addr, str, INET_ADDRSTRLEN);
 

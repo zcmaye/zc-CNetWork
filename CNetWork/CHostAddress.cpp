@@ -1,5 +1,5 @@
 #include "CHostAddress.h"
-#include<WS2tcpip.h>
+#include "CSystemSocket.h"
 
 CHostAddress::CHostAddress(const string& address) :CHostAddress()
 {
@@ -9,7 +9,7 @@ CHostAddress::CHostAddress(const string& address) :CHostAddress()
 		print("[CHostAddress line %d]:µØÖ·×ª»»Ê§°Ü\n", __LINE__);
 		this->address = 0;
 	}
-	this->address = addr.S_un.S_addr;
+	this->address = addr.s_addr;
 }
 
 CHostAddress::CHostAddress(const CHostAddress& address) :CHostAddress()
@@ -19,7 +19,7 @@ CHostAddress::CHostAddress(const CHostAddress& address) :CHostAddress()
 
 CHostAddress::CHostAddress(const sockaddr* sockaddr) :CHostAddress()
 {
-	this->address = ((sockaddr_in*)sockaddr)->sin_addr.S_un.S_addr;
+	this->address = ((sockaddr_in*)sockaddr)->sin_addr.s_addr;
 }
 
 CHostAddress::CHostAddress(cuint32 ipv4addr):CHostAddress()

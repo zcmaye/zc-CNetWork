@@ -2,28 +2,34 @@
 #include"../CNetWork/CTcpSocket.h"
 #include"../CNetWork/CHostAddress.h"
 #include<vector>
+#include<stdlib.h>
 int main()
 {
 	std::vector<CTcpSocket*> fds;
 	CTcpServer server;
-	server.listen(CHostAddress("127.0.0.1"), 8888);
-	CTcpSocket *tcpSocket =  server.waitNewConnent();
-	if (tcpSocket == nullptr)
-		return -2;
-	else
-	{
-		fds.push_back(tcpSocket);
-	}
-	print("客户端连接成功~\n");
+	server.listen(CHostAddress::AnyIPv4, 8848);
+	print("wait client connect...\n");
 	while (true)
 	{
-		for (auto& tcp : fds)
+		CTcpSocket* tcpSocket = server.waitNewConnent();
+		if (tcpSocket == nullptr)
+			continue;
+		else
 		{
-			tcp->write("Helo I'm maye");
+			fds.push_back(tcpSocket);
 		}
-		printf("send msg %d\n",fds.size());
-		Sleep(100);
+		print("客户端连接成功~\n");
+		for(int i=0;i<5;i++)
+		{
+			for (auto& tcp : fds)
+			{
+				tcp->write("Helo I'm maye");
+			}
+			printf("send msg %lu\n", fds.size());
+			//sleep(100);
+		}
 	}
+
 
 
 	getchar();

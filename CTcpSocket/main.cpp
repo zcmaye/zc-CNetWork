@@ -1,8 +1,8 @@
 #include"../CNetWork/CTcpSocket.h"
 #include"../CNetWork/CTcpServer.h"
 #include"../CNetWork/CHostAddress.h"
-#include<iostream>
-using namespace std;
+//#include<iostream>
+//using namespace std;
 
 int main()
 {
@@ -30,8 +30,8 @@ int main()
 
 
 
-	std::cout << "begin connecnt host" << std::endl;
-	client.connectToHost(CHostAddress("127.0.0.1"), 8888);
+	printf( "begin connecnt host\n" );
+	client.connectToHost(CHostAddress("127.0.0.1"), 8848);
 	//client.peerName();
 
 	while (true)

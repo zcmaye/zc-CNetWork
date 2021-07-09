@@ -47,21 +47,27 @@
 
 bool CSystemSocket::initSocket()
 {
+#ifdef  C_WIN
 	WSADATA wsadata;
 	if (WSAStartup(MAKEWORD(2, 2), &wsadata) != 0)
 	{
 		print("WSAStartup");
+		return false;
 	}
-	return false;
+#endif //  C_WIN
+	return true;
 }
 
 bool CSystemSocket::closeSocket()
 {
+#ifdef C_WIN
 	if (WSACleanup() != 0)
 	{
 		print("WSACleanup");
+		return false;
 	}
-	return false;
+#endif
+	return true;
 }
 
 fd_t CSystemSocket::socket(int af, int type, int protocol)
@@ -84,9 +90,13 @@ int CSystemSocket::connect(fd_t fd, const sockaddr* name, int namelen)
 	return ::connect(fd,name, namelen);
 }
 
-fd_t CSystemSocket::accept(fd_t fd, sockaddr* addr, int* addrlen)
+fd_t CSystemSocket::accept(fd_t fd, sockaddr* addr, socklen_t* addrlen)
 {
-	return ::accept(fd, addr,addrlen);
+#ifdef C_WIN
+	return ::accept(fd, addr,(int*)addrlen);
+#else
+	return ::accept(fd, addr, addrlen);
+#endif
 }
 
 cuint64 CSystemSocket::recv(fd_t fd, char* buf, cuint64 len, int flags)

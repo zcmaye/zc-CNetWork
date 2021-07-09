@@ -1,5 +1,5 @@
 #include "CTcpServer.h"
-#include"CTcpSocket.h"
+#include "CTcpSocket.h"
 
 CTcpServer::CTcpServer() :fd(-1)
 {
@@ -23,7 +23,7 @@ bool CTcpServer::listen(const CHostAddress& address, cuint16 port)
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
-	addr.sin_addr.S_un.S_addr = address.toIpv4Address();
+	addr.sin_addr.s_addr = address.toIpv4Address();
 	if (SOCKET_ERROR == CSystemSocket::bind(fd, (sockaddr*)&addr, sizeof(sockaddr)))
 	{
 		print("CSystemSocket::bind error\n");
@@ -36,6 +36,7 @@ bool CTcpServer::listen(const CHostAddress& address, cuint16 port)
 
 CTcpSocket* CTcpServer::waitNewConnent()
 {
+#ifdef C_WIN
 	static fd_set set;
 	FD_ZERO(&set);
 	FD_SET(fd, &set);
@@ -48,6 +49,15 @@ CTcpSocket* CTcpServer::waitNewConnent()
 		CTcpSocket* tcpSocket = new CTcpSocket(clifd);
 		return tcpSocket;
 	}
+#else
+	sockaddr addr;
+	socklen_t size = sizeof(sockaddr);
+	fd_t clifd = CSystemSocket::accept(fd, &addr, &size);
+	CTcpSocket* tcpSocket = new CTcpSocket(clifd);
+	return  tcpSocket;
+#endif // C_WIN
+
+
 
 	return nullptr;
 }
