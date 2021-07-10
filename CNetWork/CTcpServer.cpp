@@ -1,4 +1,4 @@
-#include "CTcpServer.h"
+﻿#include "CTcpServer.h"
 #include "CTcpSocket.h"
 
 CTcpServer::CTcpServer() :fd(-1)
@@ -42,7 +42,7 @@ CTcpSocket* CTcpServer::waitNewConnent()
 	FD_SET(fd, &set);
 
 	fd_set readFds = set;
-	select(1, &readFds, NULL, NULL, 0);
+	select(readFds.fd_count+1, &readFds, NULL, NULL, 0);
 	if (FD_ISSET(fd, &readFds))
 	{
 		fd_t clifd = CSystemSocket::accept(fd, NULL, NULL);

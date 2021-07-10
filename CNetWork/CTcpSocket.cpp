@@ -1,4 +1,4 @@
-#include "CTcpSocket.h"
+ï»¿#include "CTcpSocket.h"
 #include"CSystemSocket.h"
 #include<thread>
 #include<string.h>
@@ -19,7 +19,7 @@ CTcpSocket::CTcpSocket():fd(~0)
 CTcpSocket::CTcpSocket(fd_t fd)
 {
 	this->fd = fd;
-	//¼ì²âÌ×½Ó×ÖÊÇ·ñ¿É¶Á£¬ÊµÏÖÒì²½¶ÁÈ¡
+	//æ£€æµ‹å¥—æ¥å­—æ˜¯å¦å¯è¯»ï¼Œå®ç°å¼‚æ­¥è¯»å–
 	auto func = [=]()
 	{
 		while (true)
@@ -60,7 +60,7 @@ void CTcpSocket::connectToHost(const CHostAddress& address, cuint16 port, CTcp::
 	{
 		log("connect");
 	}
-	//¼ì²âÌ×½Ó×ÖÊÇ·ñ¿É¶Á£¬ÊµÏÖÒì²½¶ÁÈ¡
+	//æ£€æµ‹å¥—æ¥å­—æ˜¯å¦å¯è¯»ï¼Œå®ç°å¼‚æ­¥è¯»å–
 	auto func = [=]()
 	{
 		while (true)
@@ -97,7 +97,7 @@ string CTcpSocket::read(cuint64 maxSize)
 	char* buf = new char[maxSize+1] {0};
 	CSystemSocket::recv(fd, buf, maxSize, 0);
 	string result(buf);
-	delete buf;
+	delete[] buf;
 	isCanRead = false;
 	return std::move(result);
 }

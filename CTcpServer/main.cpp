@@ -1,10 +1,13 @@
-#include"../CNetWork/CTcpServer.h"
+Ôªø#include"../CNetWork/CTcpServer.h"
 #include"../CNetWork/CTcpSocket.h"
 #include"../CNetWork/CHostAddress.h"
 #include<vector>
 #include<stdlib.h>
 int main()
 {
+	/*
+	 g++ main.cpp ../CNetWork/CTcpServer.cpp ../CNetWork/CTcpSocket.cpp ../CNetWork/CSystemSocket.cpp ../CNetWork/CHostAddress.cpp -o client -lpthread
+	*/
 	std::vector<CTcpSocket*> fds;
 	CTcpServer server;
 	server.listen(CHostAddress::AnyIPv4, 8848);
@@ -13,19 +16,29 @@ int main()
 	{
 		CTcpSocket* tcpSocket = server.waitNewConnent();
 		if (tcpSocket == nullptr)
+		{
+			print("tcpSocket is nullptrÔºåÊ≠£Âú®Á≠âÂæÖÈáçÊñ∞ËøûÊé•\n");
 			continue;
+		}
 		else
 		{
+			print("tcpSocket create succed... %d\n",fds.size());
 			fds.push_back(tcpSocket);
 		}
-		print("øÕªß∂À¡¨Ω”≥…π¶~\n");
 		for(int i=0;i<5;i++)
 		{
 			for (auto& tcp : fds)
 			{
-				tcp->write("Helo I'm maye");
+				if (SOCKET_ERROR == tcp->write("Helo I'm maye"))
+				{
+					auto delIt = std::find(fds.begin(), fds.end(), tcp);
+					if (delIt != fds.end())
+					{
+						fds.erase(delIt);
+						print("tcpSocket remove succed\n");
+					}
+				}
 			}
-			printf("send msg %lu\n", fds.size());
 			//sleep(100);
 		}
 	}

@@ -1,4 +1,4 @@
-#include"../CNetWork/CTcpSocket.h"
+﻿#include"../CNetWork/CTcpSocket.h"
 #include"../CNetWork/CTcpServer.h"
 #include"../CNetWork/CHostAddress.h"
 //#include<iostream>
@@ -31,7 +31,13 @@ int main()
 
 
 	printf( "begin connecnt host\n" );
+#ifndef C_WIN
 	client.connectToHost(CHostAddress("127.0.0.1"), 8848);
+#else
+	client.connectToHost(CHostAddress("139.155.36.31"), 8848);
+#endif // C_WIN
+
+	
 	//client.peerName();
 
 	while (true)

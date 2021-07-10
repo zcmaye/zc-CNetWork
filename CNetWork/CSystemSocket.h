@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"Cglobal.h"
 
 #ifdef C_WIN
@@ -7,7 +7,6 @@
 #pragma comment(lib,"ws2_32.lib")
 
 using fd_t = SOCKET;
-//using socklen_t = cuint64;
 #else	
 #include<sys/socket.h>
 #include<sys/types.h>
